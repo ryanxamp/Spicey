@@ -1,0 +1,6 @@
+# Build artifacts
+helper/spicey-display
+*.o
+.build/
+Spicey.app/
+DerivedData/
