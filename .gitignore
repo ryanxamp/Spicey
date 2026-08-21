@@ -3,4 +3,5 @@ helper/spicey-display
 *.o
 .build/
 Spicey.app/
+Spicey.dmg
 DerivedData/

@@ -16,6 +16,7 @@
  */
 
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <spice-client.h>
 #include <spice-client-gtk.h>
@@ -155,6 +156,12 @@ int main(int argc, char **argv) {
         g_printerr("spicey-display: %s is missing the [virt-viewer] section\n", vv_path);
         return 3;
     }
+
+    /* Proxmox's SPICE tickets are single-use; it asks us to delete the
+     * file right after reading it so a stale copy can't be re-opened
+     * and confused for a working connection. */
+    if (g_key_file_get_boolean(kf, "virt-viewer", "delete-this-file", NULL))
+        g_unlink(vv_path);
 
     gchar *type        = vv_get(kf, "type");
     if (type && g_ascii_strcasecmp(type, "spice") != 0) {
