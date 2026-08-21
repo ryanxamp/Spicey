@@ -95,6 +95,38 @@ static void on_window_destroy(GtkWidget *w, gpointer data) {
     gtk_main_quit();
 }
 
+/* Proxmox writes shorthand like "Ctrl+Alt+R"; spice-gtk's grab-sequence
+ * parser wants X11 keysym names ("Control_L+Alt_L+r"). Translate the
+ * common modifier words and pass single characters straight through. */
+static SpiceGrabSequence *grab_sequence_from_vv(const char *release_cursor) {
+    if (!release_cursor) return NULL;
+
+    gchar **parts = g_strsplit(release_cursor, "+", -1);
+    GString *out = g_string_new(NULL);
+    for (gchar **p = parts; *p; p++) {
+        gchar *tok = g_strstrip(*p);
+        const char *mapped;
+        if (!g_ascii_strcasecmp(tok, "ctrl") || !g_ascii_strcasecmp(tok, "control"))
+            mapped = "Control_L";
+        else if (!g_ascii_strcasecmp(tok, "alt"))
+            mapped = "Alt_L";
+        else if (!g_ascii_strcasecmp(tok, "shift"))
+            mapped = "Shift_L";
+        else if (!g_ascii_strcasecmp(tok, "super") || !g_ascii_strcasecmp(tok, "cmd") || !g_ascii_strcasecmp(tok, "meta"))
+            mapped = "Super_L";
+        else
+            mapped = tok; /* single letters/function keys match X11 keysym names as-is */
+
+        if (out->len > 0) g_string_append_c(out, '+');
+        g_string_append(out, mapped);
+    }
+    g_strfreev(parts);
+
+    SpiceGrabSequence *seq = spice_grab_sequence_new_from_string(out->str);
+    g_string_free(out, TRUE);
+    return seq;
+}
+
 int main(int argc, char **argv) {
     gtk_init(&argc, &argv);
 
@@ -138,6 +170,7 @@ int main(int argc, char **argv) {
     gchar *ca          = vv_get(kf, "ca");
     gchar *subject     = vv_get(kf, "host-subject");
     gchar *title       = vv_get(kf, "title");
+    gchar *release_cursor = vv_get(kf, "release-cursor");
 
     if (!host || (!port && !tls_port)) {
         g_printerr("spicey-display: .vv is missing host / port information\n");
@@ -185,6 +218,12 @@ int main(int argc, char **argv) {
                  "resize-guest", FALSE,
                  NULL);
     gtk_container_add(GTK_CONTAINER(app.window), display);
+
+    SpiceGrabSequence *grab_seq = grab_sequence_from_vv(release_cursor);
+    if (grab_seq) {
+        spice_display_set_grab_keys(SPICE_DISPLAY(display), grab_seq);
+        spice_grab_sequence_free(grab_seq);
+    }
 
     gtk_widget_show_all(app.window);
     if (fullscreen) gtk_window_fullscreen(GTK_WINDOW(app.window));
