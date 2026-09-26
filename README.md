@@ -3,7 +3,7 @@
 A simple, native Apple Silicon app for opening Proxmox VE's `.vv`
 (virt-viewer) console files over SPICE.
 
-Built because [the official spice-space macOS client](https://www.spice-space.org/osx-client.html) is broken
+Built because the official spice-space macOS client is broken at least on Apple Silicon.
 
 ## Install
 
