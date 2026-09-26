@@ -12,7 +12,7 @@ brew tap ryanxamp/spicey
 brew install --cask spicey
 ```
 
-`Spicey.dmg` from [Releases](https://github.com/ryanxamp/Spicey/releases).
+[`Spicey.dmg` from Releases](https://github.com/ryanxamp/Spicey/releases).
 
 ## Use
 
