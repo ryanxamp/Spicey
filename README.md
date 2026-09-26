@@ -21,4 +21,4 @@ brew install --cask spicey
 
 
 
-it's a vibe lol i feel like an asshole doing that but i'm very much not a developer and this is too niche apparently for there to be literally any MacOS alternative to [Remote Viewer](https://www.spice-space.org/osx-client.html). (i'm such a non-developer that even as a daily obsidian user, i had to google how to make that link, and thats a "programming language" made for casual bloggers. it does lowkey feel really chill having something on github besides random scraps tho)
+it's a vibe lol i feel like an asshole doing that but i'm very much not a developer and this is too niche apparently for there to be literally any MacOS alternative to Remote Viewer. (i'm such a non-developer that even as a daily obsidian user, i had to google how to make that link, and thats a "programming language" made for casual bloggers. it does lowkey feel really chill having something on github besides random scraps tho)
